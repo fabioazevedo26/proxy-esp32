@@ -1,17 +1,16 @@
 {
   "name": "proxy-esp32",
   "version": "1.0.0",
-  "main": "index.js",
-"scripts": {
-  "start": "NODE_ENV=production node server.js"
-},
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
+  "author": "Seu Nome",
+  "license": "MIT",
+  "description": "Proxy HTTPS para comunicação segura entre ESP32 e React (Vercel)",
   "dependencies": {
     "cors": "^2.8.5",
-    "express": "^5.1.0",
-    "http-proxy-middleware": "^3.0.5"
+    "express": "^5.1.0"
   }
 }

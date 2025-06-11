@@ -1,41 +1,26 @@
-const express = require('express');
-const cors = require('cors');
-const https = require('https');
-const fs = require('fs');
+const express = require("express");
+const cors = require("cors");
 
 const app = express();
-const PORT = 443; // Porta HTTPS
-
 app.use(cors());
 app.use(express.json());
 
-let estadoAtual = "Sem dados ainda";
+let estado = { mensagem: "Tudo limpo. Sensor em funcionamento." };
 
-// Endpoint onde o ESP32 envia dados
-app.post('/update', (req, res) => {
-  const { mensagem } = req.body;
-
-  if (mensagem) {
-    estadoAtual = mensagem;
-    console.log("Atualização do ESP32:", mensagem);
-    return res.status(200).json({ status: 'OK' });
-  }
-
-  res.status(400).json({ error: 'Mensagem ausente' });
+// Endpoint acessado pelo React ou navegador
+app.get("/estado", (req, res) => {
+  res.json(estado);
 });
 
-// Endpoint onde o React (via HTTPS) busca o estado
-app.get('/estado', (req, res) => {
-  res.json({ mensagem: estadoAtual });
+// Endpoint usado pelo ESP32 para enviar dados
+app.post("/update", (req, res) => {
+  estado = req.body;
+  console.log("Atualização recebida do ESP32:", estado);
+  res.json({ status: "ok" });
 });
 
-// Carrega certificados SSL
-const options = {
-  key: fs.readFileSync('./certs/privkey.pem'),
-  cert: fs.readFileSync('./certs/fullchain.pem')
-};
-
-// Inicia servidor HTTPS
-https.createServer(options, app).listen(PORT, () => {
-  console.log(`Servidor HTTPS rodando na porta ${PORT}`);
+// Porta fornecida pelo Railway ou padrão 3000
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Servidor HTTP rodando na porta ${PORT}`);
 });
